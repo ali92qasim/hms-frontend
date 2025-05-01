@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Form, Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -7,6 +8,7 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid2';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -17,12 +19,19 @@ import Box from '@mui/material/Box';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
-
+import {useFormik} from 'formik';
+import {AuthLoginSchema} from '../../../schemas';
+import { loginUser } from '../../../store/slices/authSlice';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-// ===============================|| JWT - LOGIN ||=============================== //
+// ===============================|| LOGIN ||=============================== //
+
+const initialValues = {
+  email: 'demo@hospital.com',
+  password: 'Alienbeeps92',
+};
 
 export default function AuthLogin() {
   const theme = useTheme();
@@ -38,20 +47,57 @@ export default function AuthLogin() {
     event.preventDefault();
   };
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, token } = useSelector((state) => state.auth);
+
+  const formik = useFormik({
+      initialValues: initialValues,
+      validationSchema: AuthLoginSchema,
+      onSubmit: async (values) => {
+      const result = await dispatch(loginUser(values));
+
+      if (loginUser.fulfilled.match(result)) {
+        navigate('/dashboard'); 
+      }
+    }
+  });
+    const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
+
   return (
-    <>
-      <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
-        <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
-        <OutlinedInput id="outlined-adornment-email-login" type="email" value="info@codedthemes.com" name="email" inputProps={{}} />
+    <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+      <FormControl 
+      fullWidth 
+      error={Boolean(touched.email && errors.email)}
+      sx={{ ...theme.typography.customInput }}>
+        <InputLabel htmlFor="outlined-adornment-email-login">Email Address</InputLabel>
+        <OutlinedInput
+        id="outlined-adornment-email-login" 
+        type="email" 
+        name="email" 
+        {...getFieldProps('email')}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        inputProps={{}} 
+        />
+        {touched.email && errors.email && (
+          <FormHelperText>{errors.email}</FormHelperText>
+        )}
       </FormControl>
 
-      <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+      <FormControl 
+      fullWidth 
+      error={Boolean(touched.password && errors.password)}
+      sx={{ ...theme.typography.customInput }}>
         <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
         <OutlinedInput
           id="outlined-adornment-password-login"
           type={showPassword ? 'text' : 'password'}
-          value="123456"
           name="password"
+          {...getFieldProps('password')}
+          onChange={handleChange}
+          onBlur={handleBlur}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -68,6 +114,9 @@ export default function AuthLogin() {
           inputProps={{}}
           label="Password"
         />
+        {touched.password && errors.password && (
+          <FormHelperText>{errors.password}</FormHelperText>
+        )}
       </FormControl>
 
       <Grid container sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
@@ -85,11 +134,18 @@ export default function AuthLogin() {
       </Grid>
       <Box sx={{ mt: 2 }}>
         <AnimateButton>
-          <Button color="secondary" fullWidth size="large" type="submit" variant="contained">
+          <Button 
+          color="secondary" 
+          fullWidth 
+          size="large" 
+          type="submit" 
+          variant="contained"
+          disabled={isSubmitting}
+        >
             Sign In
           </Button>
         </AnimateButton>
       </Box>
-    </>
+    </Form>
   );
 }

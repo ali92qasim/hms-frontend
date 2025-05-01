@@ -23,6 +23,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     setLoading(false);
+    console.log(localStorage.getItem('token'));
   }, []);
 
   return (

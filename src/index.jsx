@@ -5,6 +5,9 @@ import App from 'App';
 import * as serviceWorker from 'serviceWorker';
 import reportWebVitals from 'reportWebVitals';
 import { ConfigProvider } from 'contexts/ConfigContext';
+import { SnackbarProvider } from 'contexts/SnackbarContext';
+import { Provider } from 'react-redux';
+import store from './store';
 
 // style + assets
 import 'assets/scss/style.scss';
@@ -31,7 +34,11 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
   <ConfigProvider>
-    <App />
+    <Provider store={store}>
+      <SnackbarProvider>
+        <App />
+      </SnackbarProvider>
+    </Provider>
   </ConfigProvider>
 );
 
