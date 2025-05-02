@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -50,7 +50,7 @@ export default function AuthLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, token } = useSelector((state) => state.auth);
+  const { user, loading, error, token } = useSelector((state) => state.auth);
 
   const formik = useFormik({
       initialValues: initialValues,
@@ -63,7 +63,13 @@ export default function AuthLogin() {
       }
     }
   });
-    const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
+  const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
+
+  useEffect(() => {
+    if (token && user) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   return (
     <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
