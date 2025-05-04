@@ -146,3 +146,9 @@
     transform: translateX(10px);
   }
 }
+
+// ==============================|| DATA GRID ||============================== //
+
+.MuiDataGrid-cellEmpty {
+  display: none !important;
+}

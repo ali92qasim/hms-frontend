@@ -29,6 +29,15 @@ export default function Table({columns, rows,  modalTrigger, title}) {
                     pageSizeOptions={[5,10,20]}
                     checkboxSelection
                     disableRowSelectionOnClick
+                    showToolbar
+                    sx={{
+                        '& .MuiDataGrid-cell:focus': {
+                          outline: 'none',
+                        },
+                        '& .MuiDataGrid-cell:focus-within': {
+                          outline: 'none',
+                        },
+                      }}
                 />
             </MuiStack>
         </MainCard>
