@@ -14,4 +14,13 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
+export const fetcher = async (url, options) => {
+  const response = await instance.get(url, options);
+  return response.data;
+};
+export const postFetcher = async (url, data, options) => {
+  const response = await instance.post(url, data, options);
+  return response.data;
+};
+
 export default instance;
