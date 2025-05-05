@@ -8,7 +8,7 @@ import { useGet } from '../../../api/requests';
 // ==============================|| VIEW USER ||============================== //
 
 const columns = [
-    { field: 'id', headerName: '#', minWidth: 60 },
+    { field: 'id', headerName: '#', minWidth: 60, separa },
     { field: 'name', headerName: 'Name', minWidth: 150 },
     { field: 'role', headerName: 'Role', minWidth: 130 },
     { field: 'email', headerName: 'Email', minWidth: 230 },
