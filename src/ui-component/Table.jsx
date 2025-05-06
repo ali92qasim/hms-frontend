@@ -25,8 +25,15 @@ export default function Table({ columns, rows, modalTrigger, title }) {
           showToolbar
           disableColumnMenu
           disableColumnResize
+          loading={!rows.length}
           slots={{
             toolbar: FilterToolbar,
+          }}
+          slotProps={{
+            loadingOverlay: {
+              variant: 'circular-progress',
+              noRowsVariant: 'circular-progress',
+            },
           }}
           sx={{
             '& .MuiDataGrid-cell:focus': {
@@ -49,6 +56,9 @@ export default function Table({ columns, rows, modalTrigger, title }) {
             },
             '& .MuiDataGrid-columnHeader:focus-within': {
               outline: 'none',
+            },
+            '& .MuiCircularProgress-root': {
+              color: theme.palette.secondary[800],
             },
           }}
         />
