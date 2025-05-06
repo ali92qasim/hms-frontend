@@ -1,4 +1,5 @@
-import { Tooltip, IconButton, TextField, Box } from '@mui/material';
+import { Tooltip, TextField, Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import Button from './extended/Button';
 import { IconPlus, IconFileDownload } from '@tabler/icons-react';
 import {
@@ -9,6 +10,7 @@ import {
 } from '@mui/x-data-grid';
 
 export function FilterToolbar() {
+  const theme = useTheme();
     return (
 <Toolbar
   sx={{
@@ -35,6 +37,13 @@ export function FilterToolbar() {
               {...controlProps}
               {...slotProps?.htmlInput}
               fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-focused fieldset': {
+                    borderColor: theme.palette.secondary.main,
+                  },
+                },
+              }}
             />
           )}
         />
@@ -53,9 +62,23 @@ export function FilterToolbar() {
       <IconPlus width={18} height={18} />
     </Button>
     <Tooltip title="Export CSV">
-      <IconButton color="secondary">
-        <IconFileDownload width={28} height={28} />
-      </IconButton>
+      <ExportCsv startIcon={
+        <IconFileDownload 
+          width={28} 
+          height={28} 
+          color={theme.palette.secondary[800]}
+          />
+      } 
+      sx={{
+        backgroundColor: 'transparent',
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+        boxShadow: 'none',
+        padding: 0,
+        minWidth: 0,
+      }}
+      />
     </Tooltip>
   </Box>
 </Toolbar>
