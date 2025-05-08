@@ -40,7 +40,7 @@ export function FilterToolbar() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '&.Mui-focused fieldset': {
-                    borderColor: theme.palette.secondary.main,
+                    borderColor: theme.palette.secondary[800],
                   },
                 },
               }}

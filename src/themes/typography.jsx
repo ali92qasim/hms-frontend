@@ -79,8 +79,56 @@ export default function Typography(theme, borderRadius, fontFamily) {
       },
       '& fieldset': {
         top: 0
+      },
+      '& .MuiInputBase-root > textarea' : {
+        padding: '30px 0px 0px 15px !important'
       }
     },
+    customSelect: {
+      marginTop: 1,
+      marginBottom: 1,
+      '& label': {
+        top: 23,
+        left: 0,
+        color: theme.palette.grey[500],
+        '&[data-shrink="false"]': {
+          top: 5
+        }
+      },
+      '& .MuiOutlinedInput-root': {
+        '& .MuiSelect-select': {
+          padding: '30.5px 14px 11.5px !important'
+        }
+      },
+      '& legend': {
+        display: 'none'
+      },
+      '& fieldset': {
+        top: 0
+      }
+    }, 
+    customDate: {
+      marginTop: 1,
+      width: '100%',
+      marginBottom: 1,
+      '& label': {
+        top: 23,
+        left: 0,
+        color: theme.palette.grey[500],
+        '&[data-shrink="false"]': {
+          top: 5
+        }
+      },
+      '& .MuiPickersSectionList-root': {
+        padding: '30px 0px 11px !important'
+      },
+      '& legend': {
+        display: 'none'
+      },
+      '& fieldset': {
+        top: 0
+      }
+    },           
     mainContent: {
       backgroundColor: theme.palette.grey[100],
       width: '100%',
