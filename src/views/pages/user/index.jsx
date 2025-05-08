@@ -1,48 +1,48 @@
 import { useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import {
-  TextField, MenuItem, InputLabel, OutlinedInput, FormHelperText, FormLabel, Select, Avatar, Button
+  TextField, MenuItem
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 import Table from '../../../ui-component/Table';
-import { useGet } from '../../../api/requests';
+import { useGet, usePost } from '../../../api/requests';
 import {columns} from '../../../config/columns/user';
 import { userSchema } from '../../../schemas';
 import FormModal from '../../../ui-component/extended/Form/FormModal';
-import FormControl from '../../../ui-component/extended/Form/FormControl';
 import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import { useFormik, Form } from 'formik';
 import { useSnackbar } from '../../../contexts/SnackbarContext';
 import { useTheme } from '@mui/material/styles'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 
 // ==============================|| VIEW USER ||============================== //
  
 
 const initialValues = {
-  role: '',
+  role: 'abc',
   firstName: 'Qasim',
   lastName: 'Ali',
   email: 'ali92qasim@live.com',
   password: '12345678',
-  phone: '',
+  phone: '03127615745',
   specialization: '',
   profilePicture: null,
   commissionPercentage: '',
-  gender: '',
+  gender: 'Male',
   address: '',
   licenseNumber: '',
-  dateOfBirth: null,
-  joiningDate: null,
+  dateOfBirth: dayjs(),
+  joiningDate: dayjs(),
 };
 
 
 export default function User() {
-  const [isDoctor, setIsDoctor] = useState(true);
+  const [isDoctor, setIsDoctor] = useState(false);
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
 
@@ -51,9 +51,10 @@ export default function User() {
       validationSchema: userSchema,
       onSubmit: async (values) => {
         try {
-          const response = await register(values)
+          const response = usePost('api/v1/users')
           showSnackbar(response.data.meta.message, 'success');
-          navigate('/');
+          return
+          // navigate('/');
         } catch (error) {
           showSnackbar(error?.message, 'error');
         }
@@ -84,27 +85,37 @@ export default function User() {
         </Grid>
       </Grid>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FormModal open={true} onClose={() => {}} title="Add User" initialValues={initialValues} validationSchema={Yup.object({})} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+      <FormModal open={true} 
+        onClose={() => {}} 
+        title="Add User" 
+        initialValues={initialValues} 
+        onSubmit={handleSubmit} 
+        isSubmitting={isSubmitting}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
-          <TextField
-            fullWidth
-            label="Select Role"
-            select
-            name="role"
-            {...getFieldProps('role')}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(touched.role && errors.role)}
-            helperText={touched.role && errors.role}
-            sx={{ ...theme.typography.customSelect }}
-          >
-            {roles?.data?.map((role) => (
-              <MenuItem key={role.id} value={role.id}>
-                {role.attributes.name}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              fullWidth
+              label="Select Role"
+              name="role"
+              sx={{ ...theme.typography.customSelect }}
+              select
+              {...getFieldProps('role')}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(touched.gender && errors.gender)}
+              helperText={touched.gender && errors.gender}
+            >
+              {roles?.data?.length > 0 ? (
+                roles.data.map((role) => (
+                  <MenuItem key={role.id} value={role.attributes.name}>
+                    {role.attributes.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">No roles available</MenuItem>
+              )}
+            </TextField>
+
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
@@ -201,41 +212,38 @@ export default function User() {
     <Grid size={{ xs: 12, sm: 6 }}>
       <DatePicker
         label="Date of Birth"
-        value={formik.values.dateOfBirth}
-        onChange={(value) => formik.setFieldValue('dateOfBirth', value)}
-        onBlur={formik.handleBlur}
-        sx={{ ...theme.typography.customDate }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            name="dateOfBirth"
-            fullWidth
-            error={Boolean(formik.touched.dateOfBirth && formik.errors.dateOfBirth)}
-            helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
-          />
-        )}
+        {...getFieldProps('dateOfBirth')}
+        onChange={handleChange}
+        onBlur={handleBlur}
+         slotProps={{
+          textField: {
+            name: 'dateOfBirth',
+            fullWidth: true,
+            error: Boolean(touched.dateOfBirth && errors.dateOfBirth),
+            helperText: touched.dateOfBirth && errors.dateOfBirth,
+            sx: { ...theme.typography.customDate },
+          },
+        }}
       />
     </Grid>
 
       {/* Joining Date */}
       <Grid size={{ xs: 12, sm: 6 }}>
-        <DatePicker
-          label="Joining Date"
-          value={formik.values.joiningDate}
-          onChange={(value) => formik.setFieldValue('joiningDate', value)}
-          onBlur={formik.handleBlur}
-          sx={{ ...theme.typography.customDate }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              name="joiningDate"
-              fullWidth
-              error={Boolean(formik.touched.joiningDate && formik.errors.joiningDate)}
-              helperText={formik.touched.joiningDate && formik.errors.joiningDate}
-              sx={{ ...theme.typography.customInput }}
-            />
-          )}
-        />
+      <DatePicker
+        label="Joining Date"
+        {...getFieldProps('joiningDate')}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        slotProps={{
+          textField: {
+            name: 'joiningDate',
+            fullWidth: true,
+            error: Boolean(touched.joiningDate && errors.joiningDate),
+            helperText: touched.joiningDate && errors.joiningDate,
+            sx: { ...theme.typography.customDate },
+          },
+        }}
+      />
       </Grid>
     {/*  
       

@@ -29,14 +29,14 @@ const FormModal = ({
         onSubmit={onSubmit}
         enableReinitialize
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting}) => (
           <Form>
             <DialogContent dividers>
               {typeof children === 'function' ? children() : children}
             </DialogContent>
             <DialogActions>
-              <Button onClick={onClose} variant="outlined">Cancel</Button>
-              <Button type="submit" variant="contained" disabled={isSubmitting}>
+              <Button onClick={onClose} color="secondary" variant="outlined">Cancel</Button>
+              <Button type="submit" variant="contained" color="secondary" disabled={isSubmitting}>
                 {isSubmitting ? <CircularProgress size={24} /> : submitText}
               </Button>
             </DialogActions>
