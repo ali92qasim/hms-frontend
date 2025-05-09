@@ -7,27 +7,19 @@ export function useGet(url, options) {
     return useMemo(() => ({data, error, isValidating}), [data, error, isValidating]);
 }
 
-export function usePost(url, options) {
-    const { data, error, isValidating } = useSWR(url, fetcher, options);
-  
-    const post = async (payload, config = {}) => {
-      try {
-        mutate(
-          url,
-          async () => {
-            const result = await postFetcher(url, payload, config);
-            return result;
-          },
-          false
-        );
-        await mutate(url);
-      } catch (err) {
-        throw err;
-      }
-    };
-  
-    return useMemo(() => ({ data, error, isValidating, post }), [data, error, isValidating]);
-  }
+export function usePost(url) {
+  const post = async (payload, config = {}) => {
+    try {
+      const result = await postFetcher(url, payload, config);
+      await mutate(url); // revalidate the GET request
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return { post };
+}
 export function usePut(url, options) {
     const {data, error, isValidating} = useSWR(url, fetcher, options);
     return useMemo(() => ({data, error, isValidating}), [data, error, isValidating]);

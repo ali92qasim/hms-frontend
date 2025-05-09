@@ -32,10 +32,10 @@ const initialValues = {
   phone: '03127615745',
   specialization: '',
   profilePicture: null,
-  commissionPercentage: '',
+  commissionPercentage: 0,
   gender: 'Male',
   address: '',
-  licenseNumber: '',
+  licenseNumber: null,
   dateOfBirth: dayjs(),
   joiningDate: dayjs(),
 };
@@ -51,16 +51,17 @@ export default function User() {
   const { data: roles } = useGet('api/v1/roles');
 
   //send request to API for storing Data
-  const { post, data, error, isValidating } = usePost('api/v1/users');
+  const { post } = usePost('api/v1/users');
     const formik = useFormik({
       initialValues: initialValues,
       validationSchema: userSchema,
       onSubmit: async (values) => {
         try {
           const response = await post(values);
-          showSnackbar(response.data.meta.message, 'success');
+          showSnackbar(response.data?.meta?.message, 'success');
           setOpen(false)
-        } catch (error) {
+        } catch (error) 
+        {
           showSnackbar(error?.message, 'error');
         }
       }
@@ -102,7 +103,10 @@ export default function User() {
               sx={{ ...theme.typography.customSelect }}
               select
               {...getFieldProps('role')}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                setIsDoctor(e.target.value === 'Doctor');
+              }}
               onBlur={handleBlur}
               error={Boolean(touched.gender && errors.gender)}
               helperText={touched.gender && errors.gender}
@@ -214,10 +218,10 @@ export default function User() {
     <Grid size={{ xs: 12, sm: 6 }}>
       <DatePicker
         label="Date of Birth"
-        {...getFieldProps('dateOfBirth')}
-        onChange={handleChange}
-        onBlur={handleBlur}
-         slotProps={{
+        value={formik.values.dateOfBirth}
+        onChange={(value) => formik.setFieldValue('dateOfBirth', value)}
+        onBlur={formik.handleBlur}
+        slotProps={{
           textField: {
             name: 'dateOfBirth',
             fullWidth: true,
@@ -231,21 +235,21 @@ export default function User() {
 
       {/* Joining Date */}
       <Grid size={{ xs: 12, sm: 6 }}>
-      <DatePicker
-        label="Joining Date"
-        {...getFieldProps('joiningDate')}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        slotProps={{
-          textField: {
-            name: 'joiningDate',
-            fullWidth: true,
-            error: Boolean(touched.joiningDate && errors.joiningDate),
-            helperText: touched.joiningDate && errors.joiningDate,
-            sx: { ...theme.typography.customDate },
-          },
-        }}
-      />
+        <DatePicker
+          label="Joining Date"
+          value={formik.values.joiningDate}
+        onChange={(value) => formik.setFieldValue('joiningDate', value)}
+        onBlur={formik.handleBlur}
+          slotProps={{
+            textField: {
+              name: 'joiningDate',
+              fullWidth: true,
+              error: Boolean(touched.joiningDate && errors.joiningDate),
+              helperText: touched.joiningDate && errors.joiningDate,
+              sx: { ...theme.typography.customDate },
+            },
+          }}
+        />
       </Grid>
     {/*  
       
