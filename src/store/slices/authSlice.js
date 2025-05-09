@@ -5,13 +5,29 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/login', credentials);
+      const response = await axios.post('api/login', credentials);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
+
+export const validateToken = createAsyncThunk(
+  'auth/validateToken',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      conosle.log("i was called");
+      const response = await axios.get('/me'); // or your token validation endpoint
+      return response.data;
+    } catch (error) {
+      dispatch(logout());
+      return rejectWithValue('Invalid token');
+    }
+  }
+);
+
 
 const authSlice = createSlice({
   name: 'auth',
@@ -49,6 +65,16 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.data?.message || 'Login failed';
+      })
+      .addCase(validateToken.fulfilled, (state, action) => {
+        state.user = action.payload.data.attributes;
+        state.token = localStorage.getItem('token');
+      })
+      .addCase(validateToken.rejected, (state) => {
+        state.user = null;
+        state.token = null;
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
       });
   }
 });

@@ -10,6 +10,7 @@ import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeDarkCard from '../../../ui-component/cards/TotalIncomeDarkCard';
 import TotalIncomeLightCard from '../../../ui-component/cards/TotalIncomeLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
+import { validateToken } from '../../../store/slices/authSlice';
 
 import { gridSpacing } from 'store/constant';
 
@@ -20,10 +21,8 @@ import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
 
 export default function Dashboard() {
   const [isLoading, setLoading] = useState(true);
-
   useEffect(() => {
     setLoading(false);
-    console.log(localStorage.getItem('token'));
   }, []);
 
   return (

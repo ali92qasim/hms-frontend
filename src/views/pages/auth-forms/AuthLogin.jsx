@@ -21,7 +21,7 @@ import Box from '@mui/material/Box';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import {useFormik} from 'formik';
 import {AuthLoginSchema} from '../../../schemas';
-import { loginUser } from '../../../store/slices/authSlice';
+import { loginUser, validateToken } from '../../../store/slices/authSlice';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -29,7 +29,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // ===============================|| LOGIN ||=============================== //
 
 const initialValues = {
-  email: 'demo@hospital.com',
+  email: 'ali92qasim@live.com',
   password: 'Alienbeeps92',
 };
 
@@ -50,14 +50,13 @@ export default function AuthLogin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, loading, error, token } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth);
 
   const formik = useFormik({
       initialValues: initialValues,
       validationSchema: AuthLoginSchema,
       onSubmit: async (values) => {
       const result = await dispatch(loginUser(values));
-
       if (loginUser.fulfilled.match(result)) {
         navigate('/dashboard'); 
       }
@@ -66,10 +65,12 @@ export default function AuthLogin() {
   const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
 
   useEffect(() => {
-    if (token && user) {
-      navigate('/dashboard');
+    const result = dispatch(validateToken());
+    if(validateToken.fulfilled.match(result)) {
+      navigate("/dashboard")
     }
-  }, [navigate]);
+  }, []);
+
 
   return (
     <Form autoComplete="off" noValidate onSubmit={handleSubmit}>

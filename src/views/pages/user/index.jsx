@@ -42,28 +42,30 @@ const initialValues = {
 
 
 export default function User() {
+  const [open, setOpen] = useState(true);
   const [isDoctor, setIsDoctor] = useState(false);
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
+  // Fetching data from API
+  const { data: users } = useGet('api/v1/users');
+  const { data: roles } = useGet('api/v1/roles');
 
+  //send request to API for storing Data
+  const { post, data, error, isValidating } = usePost('api/v1/users');
     const formik = useFormik({
       initialValues: initialValues,
       validationSchema: userSchema,
       onSubmit: async (values) => {
         try {
-          const response = usePost('api/v1/users')
+          const response = await post(values);
           showSnackbar(response.data.meta.message, 'success');
-          return
-          // navigate('/');
+          setOpen(false)
         } catch (error) {
           showSnackbar(error?.message, 'error');
         }
       }
     })
     const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
-    // Fetching data from API
-    const { data: users } = useGet('api/v1/users');
-    const { data: roles } = useGet('api/v1/roles');
 
     // parsing data to match the table structure
     const rows = users?.data?.map((user, index) => ({
@@ -85,7 +87,7 @@ export default function User() {
         </Grid>
       </Grid>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FormModal open={true} 
+      <FormModal open={open} 
         onClose={() => {}} 
         title="Add User" 
         initialValues={initialValues} 
