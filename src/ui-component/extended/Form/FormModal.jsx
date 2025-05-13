@@ -29,8 +29,9 @@ const FormModal = ({
         onSubmit={onSubmit}
         enableReinitialize
       >
-        {({ isSubmitting}) => (
+        {({}) => (
           <Form>
+          
             <DialogContent dividers>
               {typeof children === 'function' ? children() : children}
             </DialogContent>

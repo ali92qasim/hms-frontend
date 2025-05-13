@@ -11,12 +11,12 @@ import { useGet, usePost } from '../../../api/requests';
 import {columns} from '../../../config/columns/user';
 import { userSchema } from '../../../schemas';
 import FormModal from '../../../ui-component/extended/Form/FormModal';
-import * as Yup from 'yup';
 import { useFormik, Form } from 'formik';
 import { useSnackbar } from '../../../contexts/SnackbarContext';
 import { useTheme } from '@mui/material/styles'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ModalProvider, useModal } from '../../../contexts/ModalContext';
 import dayjs from 'dayjs';
 
 
@@ -42,8 +42,10 @@ const initialValues = {
 
 
 export default function User() {
-  const [open, setOpen] = useState(true);
+  const {isOpen,  closeModal} = useModal()
   const [isDoctor, setIsDoctor] = useState(false);
+  const [hasBackendError, setHasBackendError] = useState(false);
+
   const { showSnackbar } = useSnackbar();
   const theme = useTheme();
   // Fetching data from API
@@ -59,15 +61,19 @@ export default function User() {
         try {
           const response = await post(values);
           showSnackbar(response.data?.meta?.message, 'success');
-          setOpen(false)
+          closeModal()
         } catch (error) 
         {
+          setHasBackendError(true);
           showSnackbar(error?.message, 'error');
         }
       }
     })
     const {touched, errors, isSubmitting, handleBlur, handleChange, handleSubmit, getFieldProps} = formik;
-
+    const isActuallySubmitting =
+    isSubmitting &&
+    Object.keys(errors).length === 0 &&
+    !hasBackendError;
     // parsing data to match the table structure
     const rows = users?.data?.map((user, index) => ({
         id: index + 1,
@@ -88,12 +94,12 @@ export default function User() {
         </Grid>
       </Grid>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FormModal open={open} 
-        onClose={() => {}} 
+      <FormModal open={isOpen} 
+        onClose={closeModal}
         title="Add User" 
         initialValues={initialValues} 
         onSubmit={handleSubmit} 
-        isSubmitting={isSubmitting}>
+        isSubmitting={isActuallySubmitting}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
             <TextField
@@ -102,7 +108,7 @@ export default function User() {
               name="role"
               sx={{ ...theme.typography.customSelect }}
               select
-              {...getFieldProps('role')}
+              {...getFieldProps('role') ?? ''}
               onChange={(e) => {
                 handleChange(e);
                 setIsDoctor(e.target.value === 'Doctor');
@@ -113,8 +119,8 @@ export default function User() {
             >
               {roles?.data?.length > 0 ? (
                 roles.data.map((role) => (
-                  <MenuItem key={role.id} value={role.attributes.name}>
-                    {role.attributes.name}
+                  <MenuItem key={role.id} value={role?.attributes?.name}>
+                    {role?.attributes?.name}
                   </MenuItem>
                 ))
               ) : (
@@ -128,7 +134,7 @@ export default function User() {
               fullWidth
               label="First Name"
               name="firstName"
-              {...getFieldProps('firstName')}
+              {...getFieldProps('firstName') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.firstName && errors.firstName)}
@@ -141,7 +147,7 @@ export default function User() {
               fullWidth
               label="Last Name"
               name="lastName"
-              {...getFieldProps('lastName')}
+              {...getFieldProps('lastName') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.lastName && errors.lastName)}
@@ -155,7 +161,7 @@ export default function User() {
               label="Email"
               name="email"
               type="email"
-              {...getFieldProps('email')}
+              {...getFieldProps('email') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.email && errors.email)}
@@ -169,7 +175,7 @@ export default function User() {
               label="Password"
               name="password"
               type="password"
-              {...getFieldProps('password')}
+              {...getFieldProps('password') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.password && errors.password)}
@@ -183,7 +189,7 @@ export default function User() {
               label="Phone"
               name="phone"
               type="text"
-              {...getFieldProps('phone')}
+              {...getFieldProps('phone') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.phone && errors.phone)}
@@ -197,7 +203,7 @@ export default function User() {
               label="Gender"
               sx={{ ...theme.typography.customSelect }}
               select
-              {...getFieldProps('gender')}
+              {...getFieldProps('gender') ?? ''}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(touched.gender && errors.gender)}
@@ -219,7 +225,7 @@ export default function User() {
       <DatePicker
         label="Date of Birth"
         value={formik.values.dateOfBirth}
-        onChange={(value) => formik.setFieldValue('dateOfBirth', value)}
+        onChange={(value) => formik.setFieldValue('dateOfBirth', value ?? dayjs())}
         onBlur={formik.handleBlur}
         slotProps={{
           textField: {
@@ -238,7 +244,7 @@ export default function User() {
         <DatePicker
           label="Joining Date"
           value={formik.values.joiningDate}
-        onChange={(value) => formik.setFieldValue('joiningDate', value)}
+        onChange={(value) => formik.setFieldValue('joiningDate', value ?? dayjs())}
         onBlur={formik.handleBlur}
           slotProps={{
             textField: {
@@ -263,7 +269,7 @@ export default function User() {
             fullWidth
             label="Specialization"
             name="specialization"
-            {...getFieldProps('specialization')}
+            {...getFieldProps('specialization') ?? ''}
             onChange={handleChange}
             onBlur={handleBlur}
             error={Boolean(touched.specialization && errors.specialization)}
@@ -278,7 +284,7 @@ export default function User() {
             label="Commission (%)"
             name="commissionPercentage"
             type="number"
-            {...getFieldProps('commissionPercentage')}
+            {...getFieldProps('commissionPercentage') ?? ''}
             onChange={handleChange}
             onBlur={handleBlur}
             error={Boolean(touched.commissionPercentage && errors.commissionPercentage)}
@@ -292,7 +298,7 @@ export default function User() {
             fullWidth
             label="License Number"
             name="licenseNumber"
-            {...getFieldProps('licenseNumber')}
+            {...getFieldProps('licenseNumber') ?? ''}
             onChange={handleChange}
             onBlur={handleBlur}
             error={Boolean(touched.licenseNumber && errors.licenseNumber)}
@@ -309,7 +315,7 @@ export default function User() {
             label="Address"
             multiline
             minRows={1}
-            {...getFieldProps('address')}
+            {...getFieldProps('address') ?? ''}
             onChange={handleChange}
             onBlur={handleBlur}
             error={Boolean(touched.address && errors.address)}

@@ -8,8 +8,10 @@ import {
   QuickFilter,
   QuickFilterControl,
 } from '@mui/x-data-grid';
+import { useModal } from '../contexts/ModalContext';
 
 export function FilterToolbar() {
+  const {openModal} = useModal()
   const theme = useTheme();
     return (
 <Toolbar
@@ -58,8 +60,8 @@ export function FilterToolbar() {
       gap: 1,
     }}
   >
-    <Button variant="contained" color="secondary">
-      <IconPlus width={18} height={18} />
+    <Button variant="contained" color="secondary" onClick={openModal}>
+      <IconPlus width={18} height={18}/>
     </Button>
     <Tooltip title="Export CSV">
       <ExportCsv startIcon={
