@@ -28,6 +28,6 @@ export const columns = [
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
-      renderCell: (params) => <Actions {...params.row} />,
+      renderCell: (params) => <Actions {...params} />,
     }
 ];
