@@ -27,7 +27,6 @@ const FormModal = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
-        enableReinitialize
       >
         {({}) => (
           <Form>

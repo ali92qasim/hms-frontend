@@ -16,7 +16,7 @@ import { useSnackbar } from '../../../contexts/SnackbarContext';
 import { useTheme } from '@mui/material/styles'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { ModalProvider, useModal } from '../../../contexts/ModalContext';
+import { useModal } from '../../../contexts/ModalContext';
 import dayjs from 'dayjs';
 
 
@@ -24,7 +24,7 @@ import dayjs from 'dayjs';
  
 
 const initialValues = {
-  role: 'abc',
+  role: 'Receptionist',
   firstName: 'Qasim',
   lastName: 'Ali',
   email: 'ali92qasim@live.com',
@@ -57,15 +57,17 @@ export default function User() {
     const formik = useFormik({
       initialValues: initialValues,
       validationSchema: userSchema,
-      onSubmit: async (values) => {
+      onSubmit: async (values, {resetForm}) => {
         try {
           const response = await post(values);
           showSnackbar(response.data?.meta?.message, 'success');
           closeModal()
+          resetForm()
         } catch (error) 
         {
           setHasBackendError(true);
-          showSnackbar(error?.message, 'error');
+          console.log(error)
+          showSnackbar(error?.response.data?.message, 'error');
         }
       }
     })
