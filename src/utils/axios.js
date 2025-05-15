@@ -22,5 +22,12 @@ export const postFetcher = async (url, data, options) => {
   const response = await instance.post(url, data, options);
   return response.data;
 };
-
+export const putFetcher = async (url, data, options) => {
+  const response = await instance.put(url, data, options);
+  return response.data; 
+};
+export const deleteFetcher = async (url, options) => {
+  const response = await instance.delete(url, options);
+  return response.data; 
+};
 export default instance;

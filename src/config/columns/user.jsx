@@ -2,7 +2,7 @@ import Actions from "../../ui-component/Actions";
 import Chip from '@mui/material/Chip';
 
 export const columns = [
-    { field: 'id', headerName: '#', minWidth: 60 },
+    { field: 'displayId', headerName: '#', minWidth: 60 },
     { field: 'name', headerName: 'Name', minWidth: 150 },
     { field: 'role', headerName: 'Role', minWidth: 130 },
     { field: 'email', headerName: 'Email', minWidth: 230 },

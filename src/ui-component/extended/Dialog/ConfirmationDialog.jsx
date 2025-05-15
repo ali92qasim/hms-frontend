@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, IconButton } from '@mui/material';
-import { IconTrash } from '@tabler/icons-react';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import Button from '../Button';
 
 export default function ConfirmationDialog ({ open, onClose, onConfirm, item, title = "Delete Confirmation" }) {
   return (
@@ -8,22 +8,18 @@ export default function ConfirmationDialog ({ open, onClose, onConfirm, item, ti
       <DialogTitle
         id="confirmation-dialog"
       >
-          <IconTrash size={40} />
-        <Typography variant="h6">{title}</Typography>
+        {title}
       </DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" sx={{ marginBottom: '16px' }}>
-          Are you sure you want to delete <strong>{item?.name}</strong>? This action cannot be undone.
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Deleting this item will permanently remove all related data.
+      <DialogContent dividers>
+        <Typography variant="body1">
+          Are you sure you want to delete <Typography color='info' component='span'>{item} ?</Typography> 
         </Typography>
       </DialogContent>
       <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color="primary" variant="outlined">
           Cancel
         </Button>
-        <Button onClick={() => onConfirm(item)} color="secondary" variant="contained">
+        <Button onClick={onConfirm} color="secondary" variant="contained">
           Confirm
         </Button>
       </DialogActions>

@@ -78,7 +78,8 @@ export default function User() {
     !hasBackendError;
     // parsing data to match the table structure
     const rows = users?.data?.map((user, index) => ({
-        id: index + 1,
+        id: user.id,
+        displayId: index + 1,
         name: user.attributes.name,
         role: user.relationships.role.data.name,
         email: user.attributes.email,

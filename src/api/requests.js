@@ -1,5 +1,5 @@
 import useSWR, {mutate} from 'swr';
-import {fetcher, postFetcher} from '../utils/axios';
+import {fetcher, postFetcher, putFetcher, deleteFetcher} from '../utils/axios';
 import {useMemo} from 'react';
 
 export function useGet(url, options) {
@@ -11,7 +11,7 @@ export function usePost(url) {
   const post = async (payload, config = {}) => {
     try {
       const result = await postFetcher(url, payload, config);
-      await mutate(url); // revalidate the GET request
+      await mutate(url);
       return result;
     } catch (err) {
       throw err;
@@ -20,11 +20,27 @@ export function usePost(url) {
 
   return { post };
 }
-export function usePut(url, options) {
-    const {data, error, isValidating} = useSWR(url, fetcher, options);
-    return useMemo(() => ({data, error, isValidating}), [data, error, isValidating]);
+export function usePut(url) {
+  const put = async (payload, config = {}) => {
+    try {
+      const result = await putFetcher(url, payload, config); 
+      await mutate(url); 
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  return { put };
 }
-export function useDelete(url, options) {
-    const {data, error, isValidating} = useSWR(url, fetcher, options);
-    return useMemo(() => ({data, error, isValidating}), [data, error, isValidating]);
+
+export async function useDelete(key, url) {
+  const result = await deleteFetcher(url);  
+  mutate(key, 
+    (data) => {
+      const updatedData = data.data.filter(item => item.id !== result.id)
+      return updatedData
+    }
+  ); 
+  return result; 
 }

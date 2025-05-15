@@ -1,12 +1,11 @@
 import {useState} from 'react';
 import {Box, IconButton, Tooltip} from '@mui/material';
 import {IconEye, IconEdit, IconTrash} from '@tabler/icons-react';
-import Button from './extended/Button';
 import ConfirmationDialog from './extended/Dialog/ConfirmationDialog';
+import { useDelete } from '../api/requests';
 
 export default function Actions(params) {
     const [openDialog, setOpenDialog] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
     const onView = () => {
         console.log("Viewing user: ", params.row.id);
       };
@@ -16,19 +15,20 @@ export default function Actions(params) {
       };
     
       const onDelete = () => {
-        setUserToDelete(params.row); // Store the user data to delete
-        setOpenDialog(true);  // Open the confirmation dialog
+        setOpenDialog(true); 
       };
 
       
-  const handleConfirm = () => {
-    console.log("Deleting user: ", userToDelete.id); 
-    setOpenDialog(false); 
-  };
+    const handleConfirm = async () => {
+        console.log("Deleting user: ", params.row.id); 
+        const response = await useDelete(`api/v1/users`,`api/v1/users/${params.row.id}`)
+        console.log(response)
+        setOpenDialog(false); 
+    };
 
-  const handleClose = () => {
-    setOpenDialog(false); 
-  };
+    const handleClose = () => {
+        setOpenDialog(false); 
+    };
     return (
         <Box>
             <Tooltip title="View" arrow>

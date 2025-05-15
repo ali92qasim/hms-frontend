@@ -35,7 +35,7 @@ const initialValues = {
   lastName: 'Ali',
   name: 'Hassan Hospital',
   email: 'ali92qasim@live.com',
-  password: '123456',
+  password: 'Alienbeeps92',
   checked: false
 };
 
