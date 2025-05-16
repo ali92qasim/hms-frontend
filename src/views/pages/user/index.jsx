@@ -66,7 +66,6 @@ export default function User() {
         } catch (error) 
         {
           setHasBackendError(true);
-          console.log(error)
           showSnackbar(error?.response.data?.message, 'error');
         }
       }

@@ -3,9 +3,11 @@ import {Box, IconButton, Tooltip} from '@mui/material';
 import {IconEye, IconEdit, IconTrash} from '@tabler/icons-react';
 import ConfirmationDialog from './extended/Dialog/ConfirmationDialog';
 import { useDelete } from '../api/requests';
+import { useSnackbar } from '../contexts/SnackbarContext';
 
 export default function Actions(params) {
     const [openDialog, setOpenDialog] = useState(false);
+    const { showSnackbar } = useSnackbar();
     const onView = () => {
         console.log("Viewing user: ", params.row.id);
       };
@@ -20,10 +22,15 @@ export default function Actions(params) {
 
       
     const handleConfirm = async () => {
-        console.log("Deleting user: ", params.row.id); 
+        try {
         const response = await useDelete(`api/v1/users`,`api/v1/users/${params.row.id}`)
-        console.log(response)
+        if(response.status === 200) {
+            showSnackbar(response?.message, 'success')
+        }
         setOpenDialog(false); 
+    } catch(error) {
+        showSnackbar(error?.response.data?.message, 'error');
+        }
     };
 
     const handleClose = () => {
