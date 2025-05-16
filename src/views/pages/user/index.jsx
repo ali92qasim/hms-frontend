@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useModal } from '../../../contexts/ModalContext';
 import dayjs from 'dayjs';
-
+import { View } from '../../../ui-component/View';
 
 // ==============================|| VIEW USER ||============================== //
  

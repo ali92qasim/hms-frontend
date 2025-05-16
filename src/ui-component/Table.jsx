@@ -3,7 +3,7 @@ import {FilterToolbar} from '../ui-component/FilterToolbar';
 import MuiStack from '@mui/material/Stack';
 import { DataGrid } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material/styles';
-
+import { View } from './View';
 export default function Table({ columns, rows, modalTrigger, title }) {
   const theme = useTheme();
   return (

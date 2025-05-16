@@ -1,19 +1,21 @@
-import {useState} from 'react';
+import {useState, Fragment} from 'react';
 import {Box, IconButton, Tooltip} from '@mui/material';
 import {IconEye, IconEdit, IconTrash} from '@tabler/icons-react';
 import ConfirmationDialog from './extended/Dialog/ConfirmationDialog';
 import { useDelete } from '../api/requests';
 import { useSnackbar } from '../contexts/SnackbarContext';
+import { View } from './View';
 
 export default function Actions(params) {
     const [openDialog, setOpenDialog] = useState(false);
+    const [showView, setShowView] = useState(false);
     const { showSnackbar } = useSnackbar();
     const onView = () => {
-        console.log("Viewing user: ", params.row.id);
+        setShowView((prev) => !prev);
       };
     
       const onEdit = () => {
-        console.log("Editing user: ", row);
+        console.log("Editing user: ", params.row);
       };
     
       const onDelete = () => {
@@ -37,6 +39,7 @@ export default function Actions(params) {
         setOpenDialog(false); 
     };
     return (
+        <Fragment>
         <Box>
             <Tooltip title="View" arrow>
                 <IconButton onClick={onView}>
@@ -56,5 +59,11 @@ export default function Actions(params) {
 
             <ConfirmationDialog open={openDialog} onClose={handleClose} onConfirm={handleConfirm} item={params?.row?.name} />
         </Box>
+            <View
+                open={showView}
+                data={params?.row}
+                onClose={onView}
+            />
+        </Fragment>
     );
 }
